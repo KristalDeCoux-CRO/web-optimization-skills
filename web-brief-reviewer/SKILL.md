@@ -11,6 +11,12 @@ A web team can only size, staff and prioritize work it understands. Most briefs 
 
 Accept any format: a filled-in template, a document, a ticket or a pasted message. Extract the answers to the sections below. If a section is missing entirely, mark it missing; don't infer an answer for the requester.
 
+- Templates differ. If the requester's template has no field for one of the four questions, look for the answer elsewhere in the brief (a promotion plan often answers "how will people find it") and say where you found it.
+- Watch for answers in the wrong field, such as a list of personas under "stage in the buyer journey". Flag the misplaced answer and the field left empty.
+- Check names and contacts for mismatches, such as a requester name that doesn't match the email address next to it.
+
+If the user shares related documents (an architecture doc, a product brief, an earlier version), read them too and check the brief against them. Contradictions about scope, hosting, dates or ownership are the most valuable thing you can catch, because they surface after work has started.
+
 ## 2. Score the four questions that matter most
 
 Score each from 0 to 2 using `references/scoring.md`. These decide whether a request can move forward.
@@ -33,7 +39,8 @@ Mark each as complete, partial or missing, with a one-line note:
 - Content needs: copy, imagery, video, forms, and who creates them
 - Languages and regions
 - Vendor involvement, executive or external visibility
-- Desired date, and whether it's fixed (launch, event, legal) or flexible
+- Desired date as a calendar date, and whether it's fixed (launch, event, legal) or flexible. Fiscal quarters ("Q3") are ambiguous outside finance; ask for the date.
+- For a fixed date: whether the milestones leading up to it are realistic, given holidays, approvals (security, legal, brand) and content that doesn't exist yet
 - A single accountable person on the requester's side
 
 ## 4. Estimate the effort tier
@@ -46,6 +53,8 @@ Use the scope signals to propose a tier, and say which signals drove it:
 | S | Module tweak or single-page update. One team leads, others informed. |
 | M | New page or moderate enhancement. Two teams coordinating. |
 | L/XL | Three or more teams, a net-new experience across several pages, vendor or localization dependencies, or executive visibility. Needs a program manager, a requirements doc and leadership prioritization. |
+
+When the scope is genuinely unknown ("moderate to significant, pending feasibility"), propose splitting the work: size a short discovery phase on its own, and size the build after discovery confirms the scope.
 
 ## 5. Suggest where to find missing evidence
 

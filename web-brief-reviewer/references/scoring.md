@@ -6,7 +6,7 @@ Score each answer 0, 1 or 2.
 |---|---|---|---|
 | Audience | Blank, or "everyone," "developers," "customers" | A role or segment, but no depth or decision stage | Role, technical depth and decision stage. Example: "Backend developers evaluating vector search for a retrieval pipeline, midway through a build vs. buy decision." |
 | How people find it | Blank, or "we'll promote it" | A channel named without evidence | A primary channel with evidence. Example: "Organic search for 'vector database comparison' (2,400 monthly searches, we rank #9) plus one paid social push at launch." |
-| Desired outcome | Blank, or "raise awareness," "better experience" | A metric without a target, timeframe or baseline | A measurable target with timeframe and baseline. Example: "Increase trial starts from this page's call to action 15%, measured 60 days after launch against the current comparable page." |
+| Desired outcome | Blank, or "raise awareness," "better experience" | A metric without a target, timeframe or baseline | A measurable target with timeframe and baseline. For a new page or product with no baseline yet, a dated plan with an owner to set the baseline and target also scores 2. Example: "Increase trial starts from this page's call to action 15%, measured 60 days after launch against the current comparable page." |
 | Business metric | Blank, or "important for the brand" | A metric named without the mechanism | A metric and how this work moves it. Example: "Competitors outrank us for this query, and the page sits upstream of a paid keyword we already buy, so it should lower cost per trial." |
 
 ## Readiness
