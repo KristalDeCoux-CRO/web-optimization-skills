@@ -28,6 +28,16 @@ Options: `--allocation 0.5` for a 50% traffic test, `--alpha` and `--power` to c
 
 Run it for two or three MDE values and present them side by side. That table usually ends the debate faster than any argument.
 
+To work backwards from a fixed amount of traffic ("we can only run it for three weeks", or a finished test that came back flat), run:
+
+```
+python3 scripts/abtest.py detectable --baseline 0.004 --visitors 2350 --variants 3
+```
+
+It returns the smallest lift that sample can reliably detect.
+
+**Size every metric that decides the test.** Each one needs its own baseline from the same source the test will measure it with. A common failure: the plan is sized on a high-volume rate (for example signups per homepage visitor from analytics) while the test is judged on a low-volume one (trial button clicks per visitor in the testing platform), and the real test needs ten times the traffic. If the baselines in a scoping sheet don't match the primary metric's definition, say so.
+
 ## 3. Advise
 
 - **Round duration up to full weeks,** and run at least one full week (two is better) to cover weekday and weekend behavior, even if the sample fills sooner.

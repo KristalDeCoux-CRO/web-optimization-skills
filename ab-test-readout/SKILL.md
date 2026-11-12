@@ -27,6 +27,8 @@ Watch for these data problems and raise them:
 
 ## 2. Calculate with the script
 
+Metrics that aren't sequential funnel steps (navigation clicks by menu item, for example) can go in the same file; add `"funnel": false` so the script skips the step-to-step funnel.
+
 Never do the statistics in your head. Write the inputs to a JSON file in the format documented at the top of `scripts/abtest.py` (see `examples/example-input.json`) and run:
 
 ```
@@ -45,7 +47,8 @@ Decide the call from the primary metric named in the hypothesis, then use the re
 - **Winner:** the primary metric improves and is significant at the chosen alpha, and no downstream guardrail metric (activation, retention, revenue) is significantly worse.
 - **Loser:** the primary metric is significantly worse.
 - **Mixed result:** the primary metric and an important downstream step disagree. Example: fewer signups but a higher share of signups that start a trial. Name the trade-off and quantify it.
-- **Inconclusive:** nothing significant. Report the confidence interval, so readers see the range of plausible effects, and whether the test was underpowered.
+- **Inconclusive:** nothing significant. Report the confidence interval, so readers see the range of plausible effects, and check whether the test was underpowered with `python3 scripts/abtest.py detectable --baseline <control rate> --visitors <per variant>`. "Couldn't have detected less than a 50% lift" is a different lesson from "there's no effect".
+- **The primary metric is flat but a downstream step moved significantly.** Report it plainly, but don't promote it to the call; recommend a follow-up test with that step as the primary metric, sized for it.
 - Treat lifts on steps far down the funnel with small counts as directional, and say so.
 - Don't call a winner from a secondary metric when the primary metric was flat.
 

@@ -5,6 +5,7 @@ Commands
   readout <input.json>      Significance, lift, confidence intervals, funnel and a
                             sample ratio mismatch check for a finished test.
   size [options]            Sample size and duration for a planned test.
+  detectable [options]      Smallest lift a test of a given size can reliably detect.
   rice R I C E              RICE score (each factor 1-5).
 
 Readout input (JSON)
@@ -13,6 +14,7 @@ Readout input (JSON)
     "expected_split": [0.5, 0.5],          # optional, defaults to equal split
     "alpha": 0.05,                          # optional
     "primary_metric": "signups",            # which step decides the test
+    "funnel": true,                         # optional; false when the metrics aren't sequential steps
     "variants": [
       {"name": "Control", "visitors": 2357, "steps": {"cta_clicks": 433, "signups": 166, "starts": 150}},
       {"name": "Variant B", "visitors": 2084, "steps": {"cta_clicks": 420, "signups": 248, "starts": 217}}
@@ -85,7 +87,7 @@ def readout(cfg):
     control = vs[0]
     steps = list(control["steps"].keys())
     primary = cfg.get("primary_metric", steps[-1])
-    out = {"name": cfg.get("name", ""), "alpha": alpha, "primary_metric": primary,
+    out = {"name": cfg.get("name", ""), "alpha": alpha, "primary_metric": primary, "show_funnel": cfg.get("funnel", True),
            "srm": srm([v["visitors"] for v in vs], expected), "comparisons": [], "funnel": []}
     if k > 2:
         out["note"] = f"{k - 1} variants compared to control; consider a Bonferroni alpha of {alpha / (k - 1):.4f}."
@@ -115,6 +117,18 @@ def sample_size(baseline, mde_rel, alpha=0.05, power=0.8, two_sided=True):
     return math.ceil(n)
 
 
+def detectable_lift(baseline, visitors_per_variant, alpha=0.05, power=0.8):
+    """Smallest relative lift detectable with this many visitors per variant."""
+    lo, hi = 1e-4, 50.0
+    for _ in range(80):
+        mid = (lo + hi) / 2
+        if sample_size(baseline, mid, alpha, power) <= visitors_per_variant:
+            hi = mid
+        else:
+            lo = mid
+    return hi
+
+
 def fmt_pct(x, d=2):
     return "n/a" if x is None or (isinstance(x, float) and math.isnan(x)) else f"{x * 100:.{d}f}%"
 
@@ -137,6 +151,8 @@ def print_readout(r):
                   f"{fmt_pct(t['relative_lift'], 1)} | {fmt_pct(t['lift_ci'][0], 1)} to {fmt_pct(t['lift_ci'][1], 1)} | "
                   f"{t['p_value']:.2g} | {'yes' if t['significant'] else 'no'} |")
         print()
+    if not r.get("show_funnel", True):
+        return
     print("## Funnel by variant\n")
     for f in r["funnel"]:
         parts = [f"{f['visitors']:,} visitors"] + [
@@ -158,6 +174,12 @@ def main():
     s.add_argument("--alpha", type=float, default=0.05)
     s.add_argument("--power", type=float, default=0.8)
     s.add_argument("--json", action="store_true")
+    d = sub.add_parser("detectable")
+    d.add_argument("--baseline", type=float, required=True)
+    d.add_argument("--visitors", type=float, required=True, help="visitors per variant")
+    d.add_argument("--variants", type=int, default=2)
+    d.add_argument("--alpha", type=float, default=0.05)
+    d.add_argument("--power", type=float, default=0.8)
     rc = sub.add_parser("rice"); [rc.add_argument(x, type=float) for x in ("reach", "impact", "confidence", "effort")]
     a = ap.parse_args()
 
@@ -179,6 +201,12 @@ def main():
                   f"Estimated duration: {days} days (round up to {res['weeks']} full weeks)\n"
                   f"Detects {fmt_pct(a.baseline)} → {fmt_pct(res['detectable_rate'])} "
                   f"at alpha {alpha:.3g}, power {a.power:.0%}")
+    elif a.cmd == "detectable":
+        alpha = a.alpha / (a.variants - 1) if a.variants > 2 else a.alpha
+        m = detectable_lift(a.baseline, a.visitors, alpha, a.power)
+        print(f"With {a.visitors:,.0f} visitors per variant and a {fmt_pct(a.baseline)} baseline, the test can reliably detect "
+              f"a relative lift of about {m * 100:.0f}% ({fmt_pct(a.baseline)} → {fmt_pct(a.baseline * (1 + m))}) "
+              f"at alpha {alpha:.3g}, power {a.power:.0%}. Smaller real effects will usually read as not significant.")
     else:
         score = a.reach * a.impact * a.confidence / a.effort
         print(f"RICE = {a.reach:g} × {a.impact:g} × {a.confidence:g} ÷ {a.effort:g} = {score:.1f}")
