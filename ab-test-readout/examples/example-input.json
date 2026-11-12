@@ -1,0 +1,26 @@
+{
+  "name": "Example: trial overview page redesign",
+  "primary_metric": "signups",
+  "variants": [
+    {
+      "name": "Control",
+      "visitors": 2357,
+      "steps": {
+        "cta_clicks": 433,
+        "signups": 166,
+        "starts": 150,
+        "ingests": 34
+      }
+    },
+    {
+      "name": "Redesign",
+      "visitors": 2084,
+      "steps": {
+        "cta_clicks": 420,
+        "signups": 248,
+        "starts": 217,
+        "ingests": 32
+      }
+    }
+  ]
+}
